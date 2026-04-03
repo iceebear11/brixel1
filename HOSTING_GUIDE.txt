@@ -1,0 +1,151 @@
+===============================================================
+  MATERIQO / BRIXEL - STEP BY STEP HOSTING GUIDE (HostSheba)
+===============================================================
+
+BEFORE ANYTHING - DO THESE ON YOUR PC FIRST:
+----------------------------------------------
+
+STEP 1: Install Dependencies (if not done already)
+---------------------------------------------------
+Open terminal in your project folder and run:
+
+    npm install
+
+Wait until it finishes.
+
+
+STEP 2: Build the Project for Production
+-----------------------------------------
+In the same terminal, run:
+
+    npm run build
+
+This will create a ".next" folder. If it shows errors, fix them
+before continuing. If build is SUCCESSFUL, continue.
+
+
+STEP 3: Create a .env file for the server
+------------------------------------------
+Create a file called ".env" (NOT .env.local) in your project root.
+Copy everything from .env.local and change the app URL:
+
+    MONGODB_URI=mongodb://screwedone7_db_user:rifat123@ac-xsxiwej-shard-00-00.pry7k64.mongodb.net:27017,ac-xsxiwej-shard-00-01.pry7k64.mongodb.net:27017,ac-xsxiwej-shard-00-02.pry7k64.mongodb.net:27017/materiqo?ssl=true&replicaSet=atlas-gd6vzi-shard-0&authSource=admin&retryWrites=true&w=majority&appName=taha
+    JWT_SECRET=materiqo_secret_key_change_this_in_production_2024
+    NEXT_PUBLIC_APP_URL=https://YOURDOMAIN.com
+
+    (Replace YOURDOMAIN.com with your actual domain!)
+
+
+STEP 4: Files to Upload to Your Hosting Server
+------------------------------------------------
+You MUST upload these files/folders:
+
+    ✅ .next/              (build output - required)
+    ✅ public/             (images, assets)
+    ✅ src/                (source code)
+    ✅ scripts/            (admin scripts)
+    ✅ server.js           (custom Node.js server - NEW FILE)
+    ✅ package.json
+    ✅ package-lock.json
+    ✅ next.config.js
+    ✅ jsconfig.json
+    ✅ .env                (the file you created in Step 3)
+
+    ❌ DO NOT upload: node_modules/, .git/, .next/cache/
+
+
+STEP 5: Zip the Files
+----------------------
+Select all the files listed above (NOT node_modules).
+Right-click → Send to → Compressed (zipped) folder.
+Name it: brixel_deploy.zip
+
+
+STEP 6: Upload to HostSheba cPanel
+------------------------------------
+1. Go to: hostsheba.com → Login to cPanel
+2. Open "File Manager"
+3. Go to "public_html" folder (or your domain's root folder)
+4. Click "Upload" → Upload your "brixel_deploy.zip"
+5. Once uploaded, right-click it → "Extract"
+6. All files should now be inside public_html
+
+
+STEP 7: Setup Node.js App in cPanel
+-------------------------------------
+1. In cPanel, search for "Setup Node.js App" → Click it
+2. Click "Create Application"
+3. Fill in:
+   - Node.js version: 18.x or 20.x  ← Choose the highest available
+   - Application mode: Production
+   - Application root: public_html   (or subfolder if applicable)
+   - Application URL: your domain (e.g., yourdomain.com)
+   - Application startup file: server.js   ← IMPORTANT
+4. Click "Create"
+
+
+STEP 8: Add Environment Variables in cPanel
+--------------------------------------------
+On the same "Setup Node.js App" page, scroll down to:
+"Environment Variables" section and add:
+
+    Name: MONGODB_URI
+    Value: (paste your full MongoDB URI from .env file)
+
+    Name: JWT_SECRET
+    Value: materiqo_secret_key_change_this_in_production_2024
+
+    Name: NEXT_PUBLIC_APP_URL
+    Value: https://yourdomain.com
+
+    Name: NODE_ENV
+    Value: production
+
+Click "Save" after each one.
+
+
+STEP 9: Install Dependencies on Server
+----------------------------------------
+In the "Setup Node.js App" page:
+1. Click the "Run NPM Install" button
+   (OR open the Terminal in cPanel and run: npm install)
+2. Wait for it to finish
+
+
+STEP 10: Restart the Application
+----------------------------------
+Click "Restart" button in the Setup Node.js App page.
+Then open your domain in a browser.
+
+Your site should be LIVE at: https://yourdomain.com
+Admin panel at: https://yourdomain.com/admin-login
+
+
+STEP 11: Whitelist Server IP in MongoDB Atlas
+----------------------------------------------
+If your site loads but database doesn't work:
+1. Go to: cloud.mongodb.com
+2. Login → Your Project → Network Access
+3. Click "Add IP Address"
+4. Add your HostSheba server IP (find it in cPanel sidebar)
+   OR type 0.0.0.0/0 to allow all IPs (less secure but works)
+5. Click Confirm
+
+
+QUICK TROUBLESHOOT:
+--------------------
+- Site shows 503 error → Restart the Node.js app in cPanel
+- Site shows 500 error → Check environment variables are set correctly
+- Images not loading  → Check public/ folder was uploaded correctly
+- Login not working   → MongoDB Atlas IP whitelist (Step 11)
+- "next not found"    → Run npm install again on the server
+
+
+Admin Login Credentials:
+  URL:      https://yourdomain.com/admin-login
+  Email:    admin@materiqo.com
+  Password: rifat321
+
+===============================================================
+Good luck! If anything fails, check the cPanel error logs.
+===============================================================
