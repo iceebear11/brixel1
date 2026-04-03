@@ -1,0 +1,1 @@
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"taha.pry7k64.mongodb.net","type":16}],"Answer":[{"name":"taha.pry7k64.mongodb.net","type":16,"TTL":60,"data":"\"authSource=admin&replicaSet=atlas-gd6vzi-shard-0\""}]}
